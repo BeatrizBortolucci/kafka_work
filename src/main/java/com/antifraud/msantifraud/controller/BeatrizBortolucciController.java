@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/bibia")
 public class BeatrizBortolucciController {
-//    private final AntifraudProducer producer;
+    private final AntifraudProducer producer;
 
     @GetMapping
     public String beatrizDizOi() {
@@ -21,6 +21,6 @@ public class BeatrizBortolucciController {
 
     @PostMapping
     public void beatrizMandaMsg() {
-//        producer.send("gabriel", "Oi, Gabriel!");
+        producer.send("gabriel", "Oi, Gabriel!");
     }
 }

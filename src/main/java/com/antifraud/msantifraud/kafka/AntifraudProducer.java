@@ -5,9 +5,11 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
+@Component
 public class AntifraudProducer<T> {
     private Producer<String, T> producer;
 
