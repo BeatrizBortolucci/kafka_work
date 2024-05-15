@@ -1,8 +1,8 @@
 package com.antifraud.msantifraud.controller;
 
-import com.antifraud.msantifraud.kafka.AntifraudProducer;
+import com.antifraud.msantifraud.kafka.producer.AntifraudProducer;
+import com.antifraud.msantifraud.model.AntifraudEvent;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +21,8 @@ public class BeatrizBortolucciController {
 
     @PostMapping
     public void beatrizMandaMsg() {
-        producer.send("gabriel", "Oi, Gabriel!");
+        var event = new AntifraudEvent("39391215840");
+
+        producer.send("cons_antifraude", event);
     }
 }
