@@ -2,6 +2,7 @@ package com.antifraud.msantifraud.kafka.consumer;
 
 import com.antifraud.msantifraud.kafka.producer.AntifraudProducer;
 import com.antifraud.msantifraud.model.AntifraudEvent;
+import com.antifraud.msantifraud.model.AntifraudResponse;
 import com.antifraud.msantifraud.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,70 +16,63 @@ public class AntifraudConsumer {
     private final ClientRepository clientRepository;
     private final AntifraudProducer producer;
 
-    public boolean isCPF(String CPF) {
-        if (CPF.equals("00000000000") ||
-                CPF.equals("11111111111") ||
-                CPF.equals("22222222222") || CPF.equals("33333333333") ||
-                CPF.equals("44444444444") || CPF.equals("55555555555") ||
-                CPF.equals("66666666666") || CPF.equals("77777777777") ||
-                CPF.equals("88888888888") || CPF.equals("99999999999") ||
-                (CPF.length() != 11))
-            return(false);
+    public boolean isCpf(String cpf) {
+        cpf = cpf.replaceAll("[^0-9]", "");
 
-        char dig10, dig11;
-        int sm, i, r, num, peso;
+        if (cpf.length() != 11) {
+            return false;
+        }
+
+        if (cpf.matches("(\\d)\\1{10}")) {
+            return false;
+        }
 
         try {
-            sm = 0;
-            peso = 10;
-            for (i=0; i<9; i++) {
-                num = (int)(CPF.charAt(i) - 48);
-                sm = sm + (num * peso);
-                peso = peso - 1;
+            int soma = 0;
+            int peso = 10;
+
+            for (int i = 0; i < 9; i++) {
+                int num = Integer.parseInt(cpf.substring(i, i + 1));
+                soma += num * peso--;
             }
 
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11))
-                dig10 = '0';
-            else dig10 = (char)(r + 48);
+            int resto = 11 - (soma % 11);
+            char digito1 = (resto == 10 || resto == 11) ? '0' : (char) (resto + '0');
 
-            sm = 0;
+            soma = 0;
             peso = 11;
-            for(i=0; i<10; i++) {
-                num = (int)(CPF.charAt(i) - 48);
-                sm = sm + (num * peso);
-                peso = peso - 1;
+
+            for (int i = 0; i < 10; i++) {
+                int num = Integer.parseInt(cpf.substring(i, i + 1));
+                soma += num * peso--;
             }
 
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11))
-                dig11 = '0';
-            else dig11 = (char)(r + 48);
+            resto = 11 - (soma % 11);
+            char digito2 = (resto == 10 || resto == 11) ? '0' : (char) (resto + '0');
 
-            if ((dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10)))
-                return(true);
-            else return(false);
-        } catch (InputMismatchException erro) {
-            return(false);
+            return digito1 == cpf.charAt(9) && digito2 == cpf.charAt(10);
+
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
     @KafkaListener(topics = "cons_antifraude", groupId = "group_id")
-    public void consume(AntifraudEvent event) {
-        var cpf = event.getCpf();
-
-        var isCpfValid = this.isCPF(cpf);
+    public void consume(String cpf) {
+        var isCpfValid = this.isCpf(cpf);
+        var response = false;
 
         if(isCpfValid) {
             var client = clientRepository.findClientByCpfCli(cpf);
-
+            System.out.println(client);
             if(client.isPresent()) {
+                System.out.println(client.get());
                 if(client.get().getTrustedCli()) {
-                    producer.send("vered_antifraude", "Cliente confiável");
+                    response = true;
                 }
             }
         }
 
-        producer.send("vered_antifraude", "Cliente não confiável");
+        producer.send("vered_antifraude", String.valueOf(response));
     }
 }

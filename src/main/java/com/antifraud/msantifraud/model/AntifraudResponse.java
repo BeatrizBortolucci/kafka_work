@@ -1,13 +1,12 @@
 package com.antifraud.msantifraud.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class AntifraudEvent {
-    private String cpf;
+@Setter
+public class AntifraudResponse {
+    boolean cpfValid;
 }
