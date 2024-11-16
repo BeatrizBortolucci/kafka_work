@@ -1,7 +1,8 @@
 package com.antifraud.msantifraud.repository;
 
-import com.antifraud.msantifraud.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.antifraud.msantifraud.model.Client;
 
 import java.util.Optional;
 

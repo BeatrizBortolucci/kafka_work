@@ -12,6 +12,8 @@ import java.util.Date;
 @Table(name = "clientes")
 public class Client {
     @Id
+    Long id;
+
     String cpfCli;
     String nomeCli;
     String emailCli;
