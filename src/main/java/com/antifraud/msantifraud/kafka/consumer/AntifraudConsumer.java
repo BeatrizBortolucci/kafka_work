@@ -1,14 +1,11 @@
 package com.antifraud.msantifraud.kafka.consumer;
 
 import com.antifraud.msantifraud.kafka.producer.AntifraudProducer;
-import com.antifraud.msantifraud.model.AntifraudEvent;
-import com.antifraud.msantifraud.model.AntifraudResponse;
 import com.antifraud.msantifraud.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.InputMismatchException;
 
 @Service
 @RequiredArgsConstructor

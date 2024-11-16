@@ -2,7 +2,6 @@ package com.antifraud.msantifraud.controller;
 
 import com.antifraud.msantifraud.kafka.producer.AntifraudProducer;
 import com.antifraud.msantifraud.model.AntifraudEvent;
-import com.antifraud.msantifraud.model.AntifraudResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
